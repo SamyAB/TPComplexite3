@@ -10,13 +10,22 @@ typedef struct Litteral
 {
 	int valeurDeVerite;
 	char purte;
+	//Je pourrais rajouter une ligne de clause a voir...
 }Litteral;
+
+typedef struct elemListeLitteraux
+{
+	int litteral;
+	struct elemListeLitteraux *suivant;
+}elemListeLitteraux;
 
 typedef struct Clause
 {
-	int valDesLit[NB_MAX_LITTS_PER_CLAUSE];
-	int nbLits;
+	elemListeLitteraux *tete;
+	int nbLitteraux;
 }Clause;
+
+
 
 
 #endif

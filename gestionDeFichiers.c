@@ -1,4 +1,5 @@
 #include "main.h"
+#include "gestionLitterauxEtClauses.h"
 
 int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int *nbClauses,int *nbLitteraux)
 {
@@ -74,6 +75,8 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 	for(i=0;i<*nbClauses;i++)
 	{
 		fgets(ligne,255,fichier);
+		*tabClauses[i].nbLitteraux=0;
+		*tabClauses[i].tete=NULL;
 		j=0;k=0;
 		while(ligne[j]!='\n')
 		{
@@ -84,7 +87,10 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 					//ajouter le nombre a la liste des litteraux de la clause
 					nombre[k]='\0';
 					valeurLitteral=(int)strtol(nombre,NULL,10);
-					ajouterLitteral(*tabClause[i],valeurLitteral,*tabLitteraux);
+					if(ajouterLitteral(*tabClause[i],valeurLitteral)==0)//si l'ajoute du littéral a la clause s'est bien passé
+					{
+						//mettre a jour purte (à faire)
+					}
 					k=0;
 				}
 			} 
@@ -92,7 +98,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 			{
 				if(ligne[j]=='-')
 				{
-					if((j-1>0)&&(ligne[j-1]!=' '))//Afin d'éviter d'avoir des '-' au mileu d'un nombre
+					if((j-1>0)&&(ligne[j-1]!=' ')) //Afin d'éviter d'avoir des '-' au mileu d'un nombre
 					{
 						fprintf(stderr,"Fichier erronné (- précédé par autre chose que blanc), clause %d erronée\n",i);
 						break;
@@ -109,7 +115,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 					k++;
 				}	
 			}
-			else//C'est ni un blanc ni un chiffre ni un '-' ni un retour a la ligne 
+			else //C'est ni un blanc ni un chiffre ni un '-' ni un retour a la ligne 
 			{
 				fprintf(stderr,"caractère non pris en charge dans la clause %d, clause %d erronnée\n",i);
 				break;
