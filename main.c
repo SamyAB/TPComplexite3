@@ -5,9 +5,18 @@
  */
   	
 #include "main.h"
+#include "gestionDeFichiers.h"
+#include "gestionLitterauxEtClauses.h"
 
 int main(int argc,char **argv)
 {
-	
+	Clause *tabClauses;
+	Litteral *tabLitteraux;
+	int nbClauses,nbLitteraux;
+	if(!lecture("3amar.cnf",&tabClauses,&tabLitteraux,&nbClauses,&nbLitteraux))
+	{
+		affichageClauses(tabClauses,nbClauses);
+	}
+	else printf("erreur\n");
 	return 0;
 }

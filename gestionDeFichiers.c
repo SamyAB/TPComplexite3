@@ -4,7 +4,7 @@
 int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int *nbClauses,int *nbLitteraux)
 {
 	//Déclaration de variables
-	FILE *=NULL;
+	FILE *fichier=NULL;
 	int i,j,k,valeurLitteral;
 	char ligne[256],nombre[10],nombre2[10];
 	
@@ -31,7 +31,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 	
 	//Saut des caractères jusqu'au premier chiffre (sauf 0)
 	i=1;
-	while(ligne[i]<49 && ligne[i]>57) i++;
+	while(ligne[i]<'1' || ligne[i]>'9') i++;
 	
 	//Lecture du nombre de littéraux
 	j=0;
@@ -45,7 +45,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 	*nbLitteraux=(int)strtol(nombre,NULL,10);
 	
 	//Saut des caractères jusqu'au premier chiffre (sauf 0)
-	while(ligne[i]<49 && ligne[i]>57) i++;
+	while(ligne[i]<'1' || ligne[i]>'9') i++;
 	
 	//Lecture du nombre de clauses
 	j=0;
@@ -62,21 +62,21 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 	*tabClauses=(Clause*)malloc(*nbClauses*sizeof(Clause));
 	
 	//Allocation de la table de littéraux
-	*tabLitteraux=(Litteral*)malloc((*nbLitteraux+1)*sizeof(Literal));
+	*tabLitteraux=(Litteral*)malloc((*nbLitteraux+1)*sizeof(Litteral));
 	
 	//Initialisation des valeurs de vérité et des putre de tout les littéraux aux valeurs par défaut
 	for(i=1;i<=*nbLitteraux;i++)
 	{
-		*nbLitteraux[i].valeurDeVerite=0;//0 <=> valeur de vérité inconnue
-		*nbLitteraux[i].purte='i';//'i' pureté inconnue
+		(*tabLitteraux)[i].valeurDeVerite=0;//0 <=> valeur de vérité inconnue
+		(*tabLitteraux)[i].purte='i';//'i' pureté inconnue
 	}
 	
 	//Lecture des clauses et variables 
 	for(i=0;i<*nbClauses;i++)
 	{
 		fgets(ligne,255,fichier);
-		*tabClauses[i].nbLitteraux=0;
-		*tabClauses[i].tete=NULL;
+		(*tabClauses)[i].nbLitteraux=0;
+		(*tabClauses)[i].tete=NULL;
 		j=0;k=0;
 		while(ligne[j]!='\n')
 		{
@@ -87,7 +87,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 					//ajouter le nombre a la liste des litteraux de la clause
 					nombre[k]='\0';
 					valeurLitteral=(int)strtol(nombre,NULL,10);
-					if(ajouterLitteral(*tabClause[i],valeurLitteral)==0)//si l'ajoute du littéral a la clause s'est bien passé
+					if(ajouterLitteral(&((*tabClauses)[i]),valeurLitteral)==0)//si l'ajoute du littéral a la clause s'est bien passé
 					{
 						//mettre a jour purte (à faire)
 					}
@@ -111,13 +111,13 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 				}
 				else //C'est un chiffre
 				{
-					nombre1[k]=ligne[j];
+					nombre[k]=ligne[j];
 					k++;
 				}	
 			}
 			else //C'est ni un blanc ni un chiffre ni un '-' ni un retour a la ligne 
 			{
-				fprintf(stderr,"caractère non pris en charge dans la clause %d, clause %d erronnée\n",i);
+				fprintf(stderr,"caractère non pris en charge dans la clause %d, clause %d erronnée\n",i,i);
 				break;
 			}
 			j++;
