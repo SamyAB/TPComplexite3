@@ -4,16 +4,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Literal
+typedef struct Litteral
 {
 	int num;
 	int valeurDeVerite;
 	char purte;
-}Literal;
+}Litteral;
 
 typedef struct Clause
 {
-	Literal **teteLits;
+	Litteral **teteLits;
 	int nbLits;
 }Clause;
 
