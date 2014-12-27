@@ -68,7 +68,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 	for(i=1;i<=*nbLitteraux;i++)
 	{
 		(*tabLitteraux)[i].valeurDeVerite=0;//0 <=> valeur de vérité inconnue
-		(*tabLitteraux)[i].purte='i';//'i' pureté inconnue
+		(*tabLitteraux)[i].purte='0';//'0' pureté inconnue
 	}
 	
 	//Lecture des clauses et variables 
@@ -82,19 +82,32 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 		{
 			if(ligne[j]==' ')
 			{
-				if(j>0)
+				if(j>0) //Si l'espace n'est pas en début de ligne
 				{
-					//ajouter le nombre a la liste des litteraux de la clause
+					//Ajouter le nombre a la liste des litteraux de la clause
 					nombre[k]='\0';
 					valeurLitteral=(int)strtol(nombre,NULL,10);
-					if(ajouterLitteral(&((*tabClauses)[i]),valeurLitteral)==0)//si l'ajoute du littéral a la clause s'est bien passé
+					if(valeurLitteral)//la variable valeurLitteral est différente de 0
 					{
-						//mettre a jour purte (à faire)
+						if(ajouterLitteral(&((*tabClauses)[i]),valeurLitteral)==0)//si l'ajoute du littéral a la clause s'est bien passé
+						{
+							//Mettre a jour purte initiale
+							if(valeurLitteral<0)
+							{
+								if((*tabLitteraux)[-1*valeurLitteral].purte=='0') (*tabLitteraux)[-1*valeurLitteral].purte='n';
+								else if((*tabLitteraux)[-1*valeurLitteral].purte=='p') (*tabLitteraux)[-1*valeurLitteral].purte='i';
+							}
+							else //La variable valeurLitteral > 0 (strictement)
+							{
+								if((*tabLitteraux)[valeurLitteral].purte=='0') (*tabLitteraux)[valeurLitteral].purte='p';
+								else if((*tabLitteraux)[valeurLitteral].purte=='n') (*tabLitteraux)[valeurLitteral].purte='i';
+							}
+						}
 					}
 					k=0;
 				}
 			} 
-			else if((ligne[j]>=48)||(ligne[j]<=57)||(ligne[j]=='-'))
+			else if(((ligne[j]>='0')&&(ligne[j]<='9'))||(ligne[j]=='-'))//si c'est un chiffre ou '-'
 			{
 				if(ligne[j]=='-')
 				{
