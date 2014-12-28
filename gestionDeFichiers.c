@@ -59,49 +59,45 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 	*nbClauses=(int)strtol(nombre2,NULL,10);
 	
 	//Allocation de la table de clauses
-	*tabClauses=(Clause*)malloc(*nbClauses*sizeof(Clause));
+	*tabClauses=(Clause**)malloc(*nbClauses*sizeof(Clause*));
 	
 	//Allocation de la table de littéraux
-	*tabLitteraux=(Litteral*)malloc((*nbLitteraux+1)*sizeof(Litteral));
+	*tabLitteraux=(Litteral**)malloc((*nbLitteraux+1)*sizeof(Litteral*));
 	
-	//Initialisation des valeurs de vérité et des putre de tout les littéraux aux valeurs par défaut
+	//Initialisation des IDLitteral et des valeurs de vérité et des purete de tout les littéraux aux valeurs par défaut
 	for(i=1;i<=*nbLitteraux;i++)
 	{
-		(*tabLitteraux)[i].valeurDeVerite=0;//0 <=> valeur de vérité inconnue
-		(*tabLitteraux)[i].purte='0';//'0' pureté inconnue
+		(*tabLitteraux)[i]=(Litteral*)malloc(sizeof(Litteral));
+		(*tabLitteraux)[i]->IDLitteral=i;
+		(*tabLitteraux)[i]->suivant=NULL;
+		(*tabLitteraux)[i]->purete='0';//'0' pureté inconnue
 	}
 	
 	//Lecture des clauses et variables 
 	for(i=0;i<*nbClauses;i++)
 	{
+		(*tabClauses)[i]=(Clause*)malloc(sizeof(Clause));
 		fgets(ligne,255,fichier);
-		(*tabClauses)[i].nbLitteraux=0;
-		(*tabClauses)[i].tete=NULL;
+		(*tabClauses)[i]->nbLitteraux=0;
+		(*tabClauses)[i]->IDClause=i;
+		(*tabClauses)[i]->suivant=NULL;
+		(*tabClauses)[i]->tete=NULL;
 		j=0;k=0;
 		while(ligne[j]!='\n')
 		{
 			if(ligne[j]==' ')
 			{
-				if(j>0) //Si l'espace n'est pas en début de ligne
+				if((j>0)&&(ligne[j-1]>='0'&&ligne[j-1]<='9')) //Si l'espace n'est pas en début de ligne et si il est précédé par un chiffre.
 				{
 					//Ajouter le nombre a la liste des litteraux de la clause
 					nombre[k]='\0';
 					valeurLitteral=(int)strtol(nombre,NULL,10);
 					if(valeurLitteral)//la variable valeurLitteral est différente de 0
 					{
-						if(ajouterLitteral(&((*tabClauses)[i]),valeurLitteral)==0)//si l'ajoute du littéral a la clause s'est bien passé
+						if(ajouterLitteral(&((*tabClauses)[i]),valeurLitteral)!=0)//si l'ajoute du littéral a la clause s'est MAL passé
 						{
-							//Mettre a jour purte initiale
-							if(valeurLitteral<0)
-							{
-								if((*tabLitteraux)[-1*valeurLitteral].purte=='0') (*tabLitteraux)[-1*valeurLitteral].purte='n';
-								else if((*tabLitteraux)[-1*valeurLitteral].purte=='p') (*tabLitteraux)[-1*valeurLitteral].purte='i';
-							}
-							else //La variable valeurLitteral > 0 (strictement)
-							{
-								if((*tabLitteraux)[valeurLitteral].purte=='0') (*tabLitteraux)[valeurLitteral].purte='p';
-								else if((*tabLitteraux)[valeurLitteral].purte=='n') (*tabLitteraux)[valeurLitteral].purte='i';
-							}
+							fprintf(stderr,"Erreur: le litteral %d n'as pas pu être ajouté à la clause %d\n",valeurLitteral,i);
+							continue;
 						}
 					}
 					k=0;

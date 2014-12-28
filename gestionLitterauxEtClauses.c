@@ -1,58 +1,66 @@
 #include "main.h"
 
-int ajouterLitteral(Clause *clause,int valeurLitteral)
+int ajouterLitteral(Clause **clause,int valeurLitteral)
 {
-	elemListeLitteraux *tmp=NULL;
-	if(clause->tete==NULL)//Pas encore d'élément dans la liste de litteraux de cette clause
+	elemListe *tmp=NULL;
+	if(clause->teteListeLitteraux==NULL)//Pas encore d'élément dans la liste de litteraux de cette clause
 	{
 		if(clause->nbLitteraux)
 		{
 			fprintf(stderr,"Erreur: la tête de la liste des litteraux est NULL alors que le nombre de litteraux est différent de 0\n");
 			return -1;
 		}
-		clause->tete=(elemListeLitteraux*)malloc(sizeof(elemListeLitteraux));
-		if(clause->tete==NULL)
+		clause->teteListeLitteraux=(elemListe*)malloc(sizeof(elemListe));
+		if(clause->teteListeLitteraux==NULL)
 		{
 			fprintf(stderr,"Erreur : impossible d'allouer la tête de la liste des littéraux de la clause\n");
 			return -1;
 		}
-		clause->tete->litteral=valeurLitteral;
-		clause->tete->suivant=NULL;
+		clause->teteListeLitteraux->ID=valeurLitteral;
+		clause->teteListeLitteraux->suivant=NULL;
 	}
 	else //Il y a au moins un élément dans liste des littéraux de la clause
 	{
-		tmp=clause->tete;
+		tmp=clause->teteListeLitteraux;
 		while(tmp->suivant!=NULL)// Avancer jusqu'au dernier élément de la liste
 		{
 			tmp=tmp->suivant;
 		}
-		tmp->suivant=(elemListeLitteraux*)malloc(sizeof(elemListeLitteraux));
+		tmp->suivant=(elemListe*)malloc(sizeof(elemListe));
 		if(tmp->suivant==NULL)
 		{
 			fprintf(stderr,"Erreur : impossible d'allouer un élément de la liste des littéraux de la clause\n");
 			return -1;
 		}
-		tmp->suivant->litteral=valeurLitteral;
+		tmp->suivant->ID=valeurLitteral;
 		tmp->suivant->suivant=NULL;
 	}
 	clause->nbLitteraux++;
 	return 0;
 }
 
-void affichageClauses(Clause *tabClauses,int nbClauses)
+void affichageClauses(Clause **tabClauses,int tailleTabClauses)
 {
 	int i;
-	elemListeLitteraux *tmp;
+	elemListe *tmp;
+	Clause *tmpClause;
 	printf("nombre de clauses : %d\n",nbClauses);
-	for(i=0;i<nbClauses;i++)
+	for(i=0;i<tailleTabClauses;i++)
 	{
-		tmp=tabClauses[i].tete;
-		printf("clause %d : ",i);
-		while(tmp!=NULL)
+		tmpClause=tabClause[i];
+		while(tmpClause!=NULL)
 		{
-			printf("%d ",tmp->litteral);
-			tmp=tmp->suivant;
+			tmp=tmpClause->tete;
+			printf("clause %d : ",i);
+			while(tmp!=NULL)
+			{
+				printf("%d ",tmp->litteral);
+				tmp=tmp->suivant;
+			}
+			printf("\n");
+			tmpClause=tmpClause->suivant;
 		}
-		printf("\n");
 	}
-}	
+}
+
+	

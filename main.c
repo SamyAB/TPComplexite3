@@ -10,8 +10,8 @@
 
 int main(int argc,char **argv)
 {
-	Clause *tabClauses;
-	Litteral *tabLitteraux;
+	Clause **tabClauses;
+	Litteral **tabLitteraux;
 	int nbClauses,nbLitteraux;
 	if(!lecture("3amar.cnf",&tabClauses,&tabLitteraux,&nbClauses,&nbLitteraux))
 	{

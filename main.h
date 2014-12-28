@@ -8,24 +8,33 @@
 
 typedef struct Litteral
 {
-	int valeurDeVerite;
-	char purte;
-	//Je pourrais rajouter une ligne de clause a voir...
+	int IDLitteral;
+	char purete;
+	elemListe *teteListeClause;
+	struct Litteral suivant;
 }Litteral;
 
-typedef struct elemListeLitteraux
+typedef struct elemListe
 {
-	int litteral;
-	struct elemListeLitteraux *suivant;
-}elemListeLitteraux;
+	int ID;
+	struct elemListe *suivant;
+}elemListe;
 
 typedef struct Clause
 {
-	elemListeLitteraux *tete;
+	int IDClause; //Qui sera son indice initial
+	elemListe *teteListeLitteraux;
 	int nbLitteraux;
+	struct Clause *suivant; //Pour la gestion de collision avec un chainage
 }Clause;
 
-
+typedef struct Formule
+{
+	int nbClause;
+	int nbLitteraux;
+	Clause *tabClause;
+	Litteral *tabLitteraux;
+}Formule;
 
 
 #endif
