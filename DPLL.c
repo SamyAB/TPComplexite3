@@ -9,21 +9,24 @@ Formule* simplifier(Formule *f,int litteral)
 
 Formule* propagationUnitaire(Formule *f)
 {
+	//Déclaration de variables
 	Clause *tmpClause;
+	int i;
+	
 	for(i=0;i<f->tailleTabClauses && f->tabClauses[i]->nbLitteraux;i++)
 	{
 		tmpClause=f->tabClauses[i];
-		while(tmp!=NULL)
+		while(tmpClause!=NULL)
 		{
-			if(!tmp->nbLitteraux)
+			if(!tmpClause->nbLitteraux)
 			{
 				return f;
 			}
-			else if(tmp->nbLitteraux==1)
+			else if(tmpClause->nbLitteraux==1)
 			{
-				f=simplifier(f,tmp->teteListeLitteraux->ID);
+				f=simplifier(f,tmpClause->teteListeLitteraux->ID);
 			}
-			tmp=tmp->suivant;
+			tmpClause=tmpClause->suivant;
 		}
 	}
 	return f;
