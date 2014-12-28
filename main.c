@@ -14,9 +14,14 @@ int main(int argc,char **argv)
 	Clause **tabClauses;
 	Litteral **tabLitteraux;
 	int nbClauses,nbLitteraux;
-	if(!lecture("3amar.cnf",&tabClauses,&tabLitteraux,&nbClauses,&nbLitteraux))
+	Formule *f=NULL;
+	
+	f=(Formule*) malloc(sizeof(Formule));
+	if(!lecture("3amar.cnf",&(f->tabClauses),&(f->tabLitteraux),&(f->nbClauses),&(f->nbLitteraux)))
 	{
-		affichageClauses(tabClauses,nbClauses);
+		//affichageClauses(f->tabClauses,f->nbClauses);
+		f->tailleTabClauses=nbClauses;
+		f->tailleTabLitteraux=nbLitteraux;
 	}
 	else printf("erreur\n");
 	return 0;

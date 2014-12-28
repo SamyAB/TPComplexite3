@@ -1,8 +1,31 @@
 #include "main.h"
 #include "gestionLitterauxEtClauses.h"
 
+Formule* simplifier(Formule *f,int litteral)
+{
+	
+	return f;
+}
+
 Formule* propagationUnitaire(Formule *f)
 {
+	Clause *tmpClause;
+	for(i=0;i<f->tailleTabClauses && f->tabClauses[i]->nbLitteraux;i++)
+	{
+		tmpClause=f->tabClauses[i];
+		while(tmp!=NULL)
+		{
+			if(!tmp->nbLitteraux)
+			{
+				return f;
+			}
+			else if(tmp->nbLitteraux==1)
+			{
+				f=simplifier(f,tmp->teteListeLitteraux->ID);
+			}
+			tmp=tmp->suivant;
+		}
+	}
 	return f;
 }
 
