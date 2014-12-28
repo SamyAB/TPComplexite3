@@ -63,4 +63,26 @@ void affichageClauses(Clause **tabClauses,int tailleTabClauses)
 	}
 }
 
+int existeClauseVide(Formule *f)
+{
+	//Déclaration de variables
+	Clause *tmp;
+	int i;
+	
+	//parcourt des clause de f à la recherche de clause vide
+	for(i=0;i<f->tailleTabClauses;i++)
+	{
+		tmp=f->tabClauses[i];
+		while(tmp!=NULL)
+		{
+			if(!tmp->nbLitteraux) //Si il y a une clause vide, on retourne 1
+			{
+				return 1;
+			}
+			tmp=tmp->suivant;
+		}
+	} 
+	return 0;
+}
+
 	

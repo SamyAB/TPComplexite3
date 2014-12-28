@@ -30,10 +30,12 @@ typedef struct Clause
 
 typedef struct Formule
 {
-	int nbClause;
+	int nbClauses;
 	int nbLitteraux;
-	Clause *tabClause;
-	Litteral *tabLitteraux;
+	int tailleTabClauses;
+	int tailleTabLitteraux;
+	Clause **tabClauses;
+	Litteral **tabLitteraux;
 }Formule;
 
 

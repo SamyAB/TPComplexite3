@@ -7,6 +7,7 @@
 #include "main.h"
 #include "gestionDeFichiers.h"
 #include "gestionLitterauxEtClauses.h"
+#include "DPLL.h"
 
 int main(int argc,char **argv)
 {
