@@ -1,7 +1,7 @@
 #include "main.h"
 #include "gestionLitterauxEtClauses.h"
 
-int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int *nbClauses,int *nbLitteraux)
+int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,int *nbClauses,int *nbLitteraux)
 {
 	//Déclaration de variables
 	FILE *fichier=NULL;
@@ -70,6 +70,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 		(*tabLitteraux)[i]=(Litteral*)malloc(sizeof(Litteral));
 		(*tabLitteraux)[i]->IDLitteral=i;
 		(*tabLitteraux)[i]->suivant=NULL;
+		(*tabLitteraux)[i]->teteListeClauses=NULL;
 		(*tabLitteraux)[i]->purete='0';//'0' pureté inconnue
 	}
 	
@@ -81,7 +82,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 		(*tabClauses)[i]->nbLitteraux=0;
 		(*tabClauses)[i]->IDClause=i;
 		(*tabClauses)[i]->suivant=NULL;
-		(*tabClauses)[i]->tete=NULL;
+		(*tabClauses)[i]->teteListeLitteraux=NULL;
 		j=0;k=0;
 		while(ligne[j]!='\n')
 		{
@@ -94,7 +95,7 @@ int lecture(char* cheminFichier,Clause **tabClauses,Litteral **tabLitteraux,int 
 					valeurLitteral=(int)strtol(nombre,NULL,10);
 					if(valeurLitteral)//la variable valeurLitteral est différente de 0
 					{
-						if(ajouterLitteral(&((*tabClauses)[i]),valeurLitteral)!=0)//si l'ajoute du littéral a la clause s'est MAL passé
+						if(ajouterLitteral(((*tabClauses)[i]),valeurLitteral)!=0)//si l'ajoute du littéral a la clause s'est MAL passé
 						{
 							fprintf(stderr,"Erreur: le litteral %d n'as pas pu être ajouté à la clause %d\n",valeurLitteral,i);
 							continue;

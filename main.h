@@ -6,19 +6,19 @@
 
 #define NB_MAX_LITTS_PER_CLAUSE 3
 
-typedef struct Litteral
-{
-	int IDLitteral;
-	char purete;
-	elemListe *teteListeClause;
-	struct Litteral suivant;
-}Litteral;
-
 typedef struct elemListe
 {
 	int ID;
 	struct elemListe *suivant;
 }elemListe;
+
+typedef struct Litteral
+{
+	int IDLitteral;
+	char purete;
+	elemListe *teteListeClauses;
+	struct Litteral *suivant;
+}Litteral;
 
 typedef struct Clause
 {

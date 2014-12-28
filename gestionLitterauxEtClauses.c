@@ -1,6 +1,6 @@
 #include "main.h"
 
-int ajouterLitteral(Clause **clause,int valeurLitteral)
+int ajouterLitteral(Clause *clause,int valeurLitteral)
 {
 	elemListe *tmp=NULL;
 	if(clause->teteListeLitteraux==NULL)//Pas encore d'élément dans la liste de litteraux de cette clause
@@ -44,17 +44,17 @@ void affichageClauses(Clause **tabClauses,int tailleTabClauses)
 	int i;
 	elemListe *tmp;
 	Clause *tmpClause;
-	printf("nombre de clauses : %d\n",nbClauses);
+	printf("nombre de clauses : %d\n",tailleTabClauses);
 	for(i=0;i<tailleTabClauses;i++)
 	{
-		tmpClause=tabClause[i];
+		tmpClause=tabClauses[i];
 		while(tmpClause!=NULL)
 		{
-			tmp=tmpClause->tete;
+			tmp=tmpClause->teteListeLitteraux;
 			printf("clause %d : ",i);
 			while(tmp!=NULL)
 			{
-				printf("%d ",tmp->litteral);
+				printf("%d ",tmp->ID);
 				tmp=tmp->suivant;
 			}
 			printf("\n");
