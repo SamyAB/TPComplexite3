@@ -2,10 +2,10 @@
 
 ##Fonctions
 
-getLitteral et getClause et supprimerClause et supprimerLitteralDeClause 
+getLitteral et getClause et supprimerClause et supprimerLitteralDeClause et supprimerLitteralPur
 -> dans gestionLitterauxEtClauses.c
 
-litteralPur et genererFormule
+genererFormule
 -> dans DPLL.c
 
 ##Autre

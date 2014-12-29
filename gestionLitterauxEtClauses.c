@@ -115,4 +115,13 @@ Formule* supprimerLitteralDeClause(Formule* f,Clause *clause,int positionDansCla
 	 return f;
 }
 
+Formule* supprimerLitteralPur(Formule *f,Litteral* litteral)
+{
+	/* REMARQUE :
+	 * Contient la suppression des clauses conteant ce litteral
+	 */
+	 
+	 return f; 
+}
+
 

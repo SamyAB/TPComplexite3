@@ -86,11 +86,34 @@ Formule* propagationUnitaire(Formule *f)
 
 Formule* litteralPur(Formule *f)
 {
+	//Déclaration de variables
+	Litteral *tmpLitteral=NULL;
+	int i;
+	
+	//Parcourt de la table des littéraux à la recherche de littéraux purs
+	for(i=0;i<f->tailleTabLitteraux;i++)
+	{
+		tmpLitteral=f->tabLitteraux[i];
+		
+		//Gestion de collision
+		while(tmpLitteral!=NULL)
+		{
+			if(tmpLitteral->purete!='i') //Le littéral est pur
+			{
+				f=supprimerLitteralPur(f,tmpLitteral);
+			}
+		}
+	}
+	
 	return f;
 }
 
 Formule* genererFormule(Formule *f,int valeurDeVerite)
 {
+	/* IMPORTANT:
+	 * Mettre la pureté des littéraux a jour !
+	 */
+	  
 	return f;
 }
 
@@ -121,6 +144,7 @@ int DPLL(Formule **f)
 	//Libération des recources mémoire consommée par la variable contenant formule f 
 	free(*f);
 	
+	//Spliting rule (règle de séparation)
 	if(DPLL(&f1)) 
 	{
 		//La formule initiale est SAT avec ces définitions
@@ -128,6 +152,7 @@ int DPLL(Formule **f)
 	}
 	else
 	{
+		free(f1);
 		return(DPLL(&f2));
 	}
 }

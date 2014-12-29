@@ -100,6 +100,20 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 							fprintf(stderr,"Erreur: le litteral %d n'as pas pu être ajouté à la clause %d\n",valeurLitteral,i);
 							continue;
 						}
+						else
+						{
+							//Mettre a jour purete initiale
+							if(valeurLitteral<0)
+ 							{
+								if((*tabLitteraux)[-1*valeurLitteral]->purete=='0') (*tabLitteraux)[-1*valeurLitteral]->purete='n';
+								else if((*tabLitteraux)[-1*valeurLitteral]->purete=='p') (*tabLitteraux)[-1*valeurLitteral]->purete='i';
+							}
+							else //La variable valeurLitteral > 0 (strictement)
+							{
+								if((*tabLitteraux)[valeurLitteral]->purete=='0') (*tabLitteraux)[valeurLitteral]->purete='p';
+								else if((*tabLitteraux)[valeurLitteral]->purete=='n') (*tabLitteraux)[valeurLitteral]->purete='i';
+							}
+						}
 					}
 					k=0;
 				}

@@ -8,6 +8,8 @@ Litteral* getLitteral(Formule *f,int valeur);
 Clause* getClause(Formule *f,int ID);
 Formule* supprimerClause(Formule* f,Clause *clause);
 Formule* supprimerLitteralDeClause(Formule* f,Clause *clause,int positionDansClause);
+Formule* supprimerLitteralPur(Formule *f,Litteral* litteral);
+
 
 #endif
 

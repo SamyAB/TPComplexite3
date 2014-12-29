@@ -1,9 +1,19 @@
 TPComplexité3
 =============
 
-#TPcomplexité 3 
->"DPLL, a SAT problem solution"
-Première année master SII 2014/2015 USTHB
+ 
+>DPLL, a SAT problem solution.
+
+Première année master SII 2014/2015 - *USTHB*
+
+#Languages
+##Programmation 
+C.
+##Comments and doc
+French.
+
+#Description
+Implémentation de l'algorithme DPLL, solution du problème SAT, en langage C.
 
 #AUTHORS
 SamyAB (samyab2@gmail.com)
