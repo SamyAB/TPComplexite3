@@ -85,4 +85,34 @@ int existeClauseVide(Formule *f)
 	return 0;
 }
 
+Litteral* getLitteral(Formule *f,int ID)
+{
+	//Déclaration de variables
+	Litteral *tmpLitteral=NULL;
 	
+	return tmpLitteral;
+}
+
+Clause* getClause(Formule *f,int ID)
+{
+	//Déclaration de variables
+	Clause *tmpClause=NULL;
+	
+	return tmpClause;
+}
+
+Formule* supprimerClause(Formule* f,Clause *clause)
+{
+	return f;
+}
+
+Formule* supprimerLitteralDeClause(Formule* f,Clause *clause,int positionDansClause)
+{
+	/* REMARAUE :
+	 * Les poistion dans clause commencent a partir de 0*/
+	 
+	 
+	 return f;
+}
+
+

@@ -3,7 +3,56 @@
 
 Formule* simplifier(Formule *f,int litteral)
 {
+	//Déclaration de variables
+	Litteral *tmpLitteral=NULL;
+	elemListe *tmpElemClause=NULL,*tmpElemLitteral=NULL;
+	Clause *tmpClause=NULL;
+	int positionDansClause,suppressionClause;
 	
+	//Récupération du littéral dont l'ID est les valeure absolue de litteral
+	tmpLitteral=getLitteral(f,abs(litteral));
+	tmpElemClause=tmpLitteral->teteListeClauses;
+	
+	//Parcourt de la liste d'ID de clauses contenant le litteral
+	while(tmpElemClause!=NULL)
+	{
+		//Récupérer la clause d'ID tmpElemClause->ID
+		tmpClause=getClause(f,tmpElemClause->ID);
+		
+		//Initialiser le booléen suppression clause a faux
+		suppressionClause=0;
+		
+		//Recherche dans la clause le litteral dont l'ID est litteral
+		tmpElemLitteral=tmpClause->teteListeLitteraux;
+		positionDansClause=0;
+		while(tmpElemLitteral!=NULL) //Parcour tout les litteraux pour gerer le cas de précence du même littéral plusieurs fois dans la clause
+		{
+			if(tmpElemLitteral->ID==litteral) //Si la clause contient litteral
+			{
+				tmpElemClause=tmpElemClause->suivant;
+				/* Faire ce passage avant de supprimer la clause car à la suppression
+				 * de la clause les information dans tmpElemClause seront effacés et le suivant le sera aussi
+				 */
+				
+				suppressionClause=1;
+				f=supprimerClause(f,tmpClause);
+				break; //La clause supprimée on ne va pas chercher plus loin dans cette même clause
+			}
+			else if(tmpElemLitteral->ID==(-1)*litteral) //Si la clause contient l'inverse de litteral
+			{
+				tmpElemLitteral=tmpElemLitteral->suivant;
+				f=supprimerLitteralDeClause(f,tmpClause,positionDansClause);
+				continue; //Élément de la clause supprimé passage au suivant effectué avant sa suppression et la position reste la même
+			}
+			
+			tmpElemLitteral=tmpElemLitteral->suivant;
+			positionDansClause++;
+		}
+		if(!suppressionClause) //Si la clause a été supprimée ce passage a déjà été effectué 
+		{
+			tmpElemClause=tmpElemClause->suivant;
+		}
+	}
 	return f;
 }
 
@@ -13,16 +62,19 @@ Formule* propagationUnitaire(Formule *f)
 	Clause *tmpClause;
 	int i;
 	
-	for(i=0;i<f->tailleTabClauses && f->tabClauses[i]->nbLitteraux;i++)
+	//Pacourt de la table des clause a la recherche d'une clause vide ou de clause unitaire
+	for(i=0;i<f->tailleTabClauses;i++)
 	{
 		tmpClause=f->tabClauses[i];
+		
+		//Gestion de collisions
 		while(tmpClause!=NULL)
 		{
-			if(!tmpClause->nbLitteraux)
+			if(!tmpClause->nbLitteraux) //Clause vide 
 			{
 				return f;
 			}
-			else if(tmpClause->nbLitteraux==1)
+			else if(tmpClause->nbLitteraux==1) //Clause unitaire, donc a simplifier
 			{
 				f=simplifier(f,tmpClause->teteListeLitteraux->ID);
 			}
