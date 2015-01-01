@@ -22,7 +22,7 @@ typedef struct Litteral
 
 typedef struct Clause
 {
-	int IDClause; //Qui sera son indice initial
+	int IDClause; //Qui sera son indice initial et vaut -1 si clause est supprimée
 	elemListe *teteListeLitteraux;
 	int nbLitteraux;
 	struct Clause *suivant; //Pour la gestion de collision avec un chainage

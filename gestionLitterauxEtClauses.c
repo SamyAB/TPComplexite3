@@ -51,7 +51,7 @@ void affichageClauses(Clause **tabClauses,int tailleTabClauses)
 		while(tmpClause!=NULL)
 		{
 			tmp=tmpClause->teteListeLitteraux;
-			printf("clause %d : ",i);
+			printf("clause %d : ",tmpClause->IDClause);
 			while(tmp!=NULL)
 			{
 				printf("%d ",tmp->ID);
@@ -75,7 +75,7 @@ void affichageLitteraux(Litteral **tabLitteraux,int tailleTabLitteraux)
 		while(tmpLitteral!=NULL)
 		{
 			tmp=tmpLitteral->teteListeClauses;
-			printf("Litteral %d à ",i);
+			printf("Litteral %d à ",i+1);
 			printf("pureté %c : ",tmpLitteral->purete);
 			while(tmp!=NULL)
 			{
@@ -100,6 +100,11 @@ int existeClauseVide(Formule *f)
 		tmp=f->tabClauses[i];
 		while(tmp!=NULL)
 		{
+			if(!tmp->IDClause)//Clause n'existe plus (sera supprimer a la prochaine générartion de fomrule)
+			{
+				tmp=tmp->suivant;
+				continue;
+			}
 			if(!tmp->nbLitteraux) //Si il y a une clause vide, on retourne 1
 			{
 				return 1;
@@ -126,19 +131,88 @@ Clause* getClause(Formule *f,int ID)
 	return tmpClause;
 }
 
-Formule* supprimerClause(Formule* f,Clause *clause)
-{
-	return f;
-}
-
 Formule* supprimerLitteralDeClause(Formule* f,Clause *clause,int positionDansClause)
 {
 	/* REMARAUE :
 	 * Les poistion dans clause commencent a partir de 0*/
+	//Déclaration de variables
+	int i,x,supprime=0;
+	elemListe *tmpElemLitteral=NULL,*tmpElemLitteral2=NULL;
+	elemListe *tmpElemClause=NULL,*tmpElemClause2=NULL;
+	Litteral *tmpLitteral=NULL;
 	 
+	tmpElemLitteral=clause->teteListeLitteraux;
 	 
-	 return f;
+	if(!positionDansClause)//position 0 : le litéral a supprimer est dans la tête de liste des littéraux dans la clause
+	{
+		clause->teteListeLitteraux=clause->teteListeLitteraux->suivant;
+	}
+	else
+	{
+		tmpElemLitteral2=tmpElemLitteral;
+		tmpElemLitteral=tmpElemLitteral->suivant;
+		 
+		//Avancer jusqu'a le littéral a supprimer
+		for(i=1;i<=positionDansClause;i++)
+		{
+			tmpElemLitteral=tmpElemLitteral->suivant;
+			tmpElemLitteral2=tmpElemLitteral2->suivant;
+		}
+		tmpElemLitteral2->suivant=tmpElemLitteral->suivant;
+	}
+	 
+	//Suppression de la clause dans la liste de clause du litteral
+	tmpLitteral=getLitteral(f,abs(tmpElemLitteral->ID));
+	tmpElemClause=tmpLitteral->teteListeClauses;
+	
+	//Si le littéral est négatif la clause dans la liste de clause du littéral est négatif
+	if(tmpElemLitteral->ID<0) x=-1;
+	else x=1;
+	
+	if((tmpElemClause->ID*(x))==clause->IDClause)
+	{
+		tmpLitteral->teteListeClauses=tmpElemClause->suivant; 
+	}
+	else
+	{
+		tmpElemClause2=tmpElemClause;
+		tmpElemClause=tmpElemClause->suivant;
+		while(tmpElemClause!=NULL||tmpElemClause->ID*x==clause->IDClause)
+		{
+			tmpElemClause=tmpElemClause->suivant;
+			tmpElemClause2=tmpElemClause2->suivant;
+		}
+		tmpElemClause2->suivant=tmpElemClause->suivant;
+	}
+	free(tmpElemClause);
+	free(tmpElemLitteral);
+	 
+	clause->nbLitteraux--;
+	return f;
 }
+
+
+Formule* supprimerClause(Formule* f,Clause *clause)
+{
+	//Déclaration de variable
+	elemListe *tmpElemLitteral=clause->teteListeLitteraux;
+	int position=0;
+	
+	//Parcoure des littéraux de la clause "clause"
+	while(tmpElemLitteral!=NULL)
+	{
+		//Suppression du littéral de la clause "clause" et de "clause" de liste de clause du litéral
+		f=supprimerLitteralDeClause(f,clause,position);
+		position++;
+		tmpElemLitteral=tmpElemLitteral->suivant;
+	}
+	
+	//la clause n'existe plus ! mettre l'ID a -1
+	clause->IDClause=0;
+	
+	return f;
+}
+
 
 Formule* supprimerLitteralPur(Formule *f,Litteral* litteral)
 {

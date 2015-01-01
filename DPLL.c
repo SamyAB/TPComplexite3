@@ -136,7 +136,8 @@ int DPLL(Formule **f)
 		free(*f);
 		return 0;
 	}
-	//Mettre a jour littéraux pures
+	
+	//Ne pas oublier de mettre a jour littéraux pures dans générer formule !!!
 	*f=litteralPur(*f);
 	
 	//On génére une copie de la formule f avec affectation d'un littéral a vrai dans f1 

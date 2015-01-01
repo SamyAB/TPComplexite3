@@ -63,13 +63,13 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 	*tabClauses=(Clause**)malloc(*nbClauses*sizeof(Clause*));
 	
 	//Allocation de la table de littéraux
-	*tabLitteraux=(Litteral**)malloc((*nbLitteraux+1)*sizeof(Litteral*));
+	*tabLitteraux=(Litteral**)malloc((*nbLitteraux)*sizeof(Litteral*));
 	
 	//Initialisation des IDLitteral et des valeurs de vérité et des purete de tout les littéraux aux valeurs par défaut
-	for(i=1;i<=*nbLitteraux;i++)
+	for(i=0;i<*nbLitteraux;i++)
 	{
 		(*tabLitteraux)[i]=(Litteral*)malloc(sizeof(Litteral));
-		(*tabLitteraux)[i]->IDLitteral=i;
+		(*tabLitteraux)[i]->IDLitteral=i+1;
 		(*tabLitteraux)[i]->suivant=NULL;
 		(*tabLitteraux)[i]->teteListeClauses=NULL;
 		(*tabLitteraux)[i]->purete='0';//'0' pureté inconnue
@@ -81,7 +81,7 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 		(*tabClauses)[i]=(Clause*)malloc(sizeof(Clause));
 		fgets(ligne,255,fichier);
 		(*tabClauses)[i]->nbLitteraux=0;
-		(*tabClauses)[i]->IDClause=i;
+		(*tabClauses)[i]->IDClause=i+1;
 		(*tabClauses)[i]->suivant=NULL;
 		(*tabClauses)[i]->teteListeLitteraux=NULL;
 		j=0;k=0;
@@ -105,21 +105,28 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 						{
 							//Ajout de la clause à la liste de la clause i du littral tabLittéraux[abs(valeurLitteral)]
 							tmpElemClause=(elemListe*)malloc(sizeof(elemListe));
-							tmpElemClause->ID=i;
-							tmpElemClause->suivant=(*tabLitteraux)[abs(valeurLitteral)]->teteListeClauses;
-							(*tabLitteraux)[abs(valeurLitteral)]->teteListeClauses=tmpElemClause;
+							if(valeurLitteral>0)//Si le littéral est positif
+							{
+								tmpElemClause->ID=(i+1);
+							}
+							else//Si le littéral est négatif
+							{
+								tmpElemClause->ID=(i+1)*(-1);
+							}
+							tmpElemClause->suivant=(*tabLitteraux)[abs(valeurLitteral)-1]->teteListeClauses;
+							(*tabLitteraux)[abs(valeurLitteral)-1]->teteListeClauses=tmpElemClause;
 							
 							
 							//Mettre a jour purete initiale
 							if(valeurLitteral<0)
  							{
-								if((*tabLitteraux)[-1*valeurLitteral]->purete=='0') (*tabLitteraux)[-1*valeurLitteral]->purete='n';
-								else if((*tabLitteraux)[-1*valeurLitteral]->purete=='p') (*tabLitteraux)[-1*valeurLitteral]->purete='i';
+								if((*tabLitteraux)[(-1*valeurLitteral)-1]->purete=='0') (*tabLitteraux)[(-1*valeurLitteral)-1]->purete='n';
+								else if((*tabLitteraux)[(-1*valeurLitteral)-1]->purete=='p') (*tabLitteraux)[(-1*valeurLitteral)-1]->purete='i';
 							}
 							else //La variable valeurLitteral > 0 (strictement)
 							{
-								if((*tabLitteraux)[valeurLitteral]->purete=='0') (*tabLitteraux)[valeurLitteral]->purete='p';
-								else if((*tabLitteraux)[valeurLitteral]->purete=='n') (*tabLitteraux)[valeurLitteral]->purete='i';
+								if((*tabLitteraux)[valeurLitteral-1]->purete=='0') (*tabLitteraux)[valeurLitteral-1]->purete='p';
+								else if((*tabLitteraux)[valeurLitteral-1]->purete=='n') (*tabLitteraux)[valeurLitteral-1]->purete='i';
 							}
 						}
 					}
