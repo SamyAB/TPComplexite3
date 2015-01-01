@@ -38,6 +38,11 @@ typedef struct Formule
 	Litteral **tabLitteraux;
 }Formule;
 
+typedef struct Pile
+{
+	int litteral;
+	int valeurDeVertier;
+}Pile;
 
 #endif
 

@@ -131,8 +131,11 @@ int DPLL(Formule **f)
 	*f=propagationUnitaire(*f);
 	
 	//Si il existe une clause vide la formule est UNSAT	
-	if(existeClauseVide) return 0;
-	
+	if(existeClauseVide(*f)) 
+	{
+		free(*f);
+		return 0;
+	}
 	//Mettre a jour littéraux pures
 	*f=litteralPur(*f);
 	
@@ -152,7 +155,6 @@ int DPLL(Formule **f)
 	}
 	else
 	{
-		free(f1);
 		return(DPLL(&f2));
 	}
 }

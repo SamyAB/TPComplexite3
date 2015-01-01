@@ -7,6 +7,7 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 	FILE *fichier=NULL;
 	int i,j,k,valeurLitteral;
 	char ligne[256],nombre[10],nombre2[10];
+	elemListe *tmpElemClause=NULL;
 	
 	//Ouverture du fichier en mode lecture
 	fichier=fopen(cheminFichier,"r");
@@ -102,6 +103,13 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 						}
 						else
 						{
+							//Ajout de la clause à la liste de la clause i du littral tabLittéraux[abs(valeurLitteral)]
+							tmpElemClause=(elemListe*)malloc(sizeof(elemListe));
+							tmpElemClause->ID=i;
+							tmpElemClause->suivant=(*tabLitteraux)[abs(valeurLitteral)]->teteListeClauses;
+							(*tabLitteraux)[abs(valeurLitteral)]->teteListeClauses=tmpElemClause;
+							
+							
 							//Mettre a jour purete initiale
 							if(valeurLitteral<0)
  							{

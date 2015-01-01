@@ -3,6 +3,7 @@
 
 int ajouterLitteral(Clause *clause,int valeurLitteral);
 void affichageClauses(Clause **tabClauses,int tailleTabClauses);
+void affichageLitteraux(Litteral **tabLitteraux,int tailleTabLitteraux);
 int existeClauseVide(Formule *f);
 Litteral* getLitteral(Formule *f,int valeur);
 Clause* getClause(Formule *f,int ID);

@@ -63,6 +63,31 @@ void affichageClauses(Clause **tabClauses,int tailleTabClauses)
 	}
 }
 
+void affichageLitteraux(Litteral **tabLitteraux,int tailleTabLitteraux)
+{
+	int i;
+	elemListe *tmp;
+	Litteral *tmpLitteral;
+	printf("nombre de litteraux : %d\n",tailleTabLitteraux);
+	for(i=0;i<tailleTabLitteraux;i++)
+	{
+		tmpLitteral=tabLitteraux[i];
+		while(tmpLitteral!=NULL)
+		{
+			tmp=tmpLitteral->teteListeClauses;
+			printf("Litteral %d à ",i);
+			printf("pureté %c : ",tmpLitteral->purete);
+			while(tmp!=NULL)
+			{
+				printf("%d ",tmp->ID);
+				tmp=tmp->suivant;
+			}
+			printf("\n");
+			tmpLitteral=tmpLitteral->suivant;
+		}
+	}
+}
+
 int existeClauseVide(Formule *f)
 {
 	//Déclaration de variables
@@ -123,5 +148,15 @@ Formule* supprimerLitteralPur(Formule *f,Litteral* litteral)
 	 
 	 return f; 
 }
+
+int empiler(int litteral,int valeurDeVertier)
+{
+	return 0;
+}
+
+int depiler()
+{
+	return 0;
+}	
 
 

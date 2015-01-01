@@ -2,7 +2,7 @@
 
 ##Fonctions
 
-getLitteral et getClause et supprimerClause et supprimerLitteralDeClause et supprimerLitteralPur
+getLitteral et getClause et supprimerClause et supprimerLitteralDeClause et supprimerLitteralPur et empiler et depiler
 -> dans gestionLitterauxEtClauses.c
 
 genererFormule

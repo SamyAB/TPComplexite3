@@ -19,9 +19,10 @@ int main(int argc,char **argv)
 	f=(Formule*) malloc(sizeof(Formule));
 	if(!lecture("3amar.cnf",&(f->tabClauses),&(f->tabLitteraux),&(f->nbClauses),&(f->nbLitteraux)))
 	{
-		//affichageClauses(f->tabClauses,f->nbClauses);
-		f->tailleTabClauses=nbClauses;
-		f->tailleTabLitteraux=nbLitteraux;
+		affichageClauses(f->tabClauses,f->nbClauses);
+		affichageLitteraux(f->tabLitteraux,f->nbLitteraux);
+		//f->tailleTabClauses=nbClauses;
+		//f->tailleTabLitteraux=nbLitteraux;
 	}
 	else printf("erreur\n");
 	return 0;
