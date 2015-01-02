@@ -125,12 +125,13 @@ Litteral* getLitteral(Formule *f,int ID)
 {
 	//Déclaration de variables
 	Litteral *tmpLitteral=NULL;
-	printf("%d sur\n",hashage(ID,f->tailleTabLitteraux));
+	//printf("%d sur %d \n",ID,hashage(ID,f->tailleTabLitteraux));
 	tmpLitteral=f->tabLitteraux[hashage(ID,f->tailleTabLitteraux)];
 	
 	//Gestion de collision
-	while(tmpLitteral!=NULL && tmpLitteral->IDLitteral!=ID)
+	while(tmpLitteral!=NULL && tmpLitteral->IDLitteral!=abs(ID))
 	{
+		printf("Samy sur tmp %d id %d\n",tmpLitteral->IDLitteral,ID);
 		tmpLitteral=tmpLitteral->suivant;
 	}
 	
@@ -147,10 +148,10 @@ Litteral* getLitteral(Formule *f,int ID)
 Clause* getClause(Formule *f,int ID)
 {
 	//Déclaration de variables
-	Clause *tmpClause=f->tabClauses[hashage(ID,f->tailleTabClauses)];
+	Clause *tmpClause=f->tabClauses[hashage(abs(ID),f->tailleTabClauses)];
 	
 	//Gestion de collision
-	while(tmpClause!=NULL && tmpClause->IDClause!=ID)
+	while(tmpClause!=NULL && tmpClause->IDClause!=abs(ID))
 	{
 		tmpClause=tmpClause->suivant;
 	}
@@ -158,7 +159,7 @@ Clause* getClause(Formule *f,int ID)
 	//Si la clause à l'ID "ID" n'éxiste pas dans la table des clauses
 	if(tmpClause==NULL)
 	{
-		fprintf(stderr,"Erreur: la clause %d n'existe pas dans la table (fonction getClause)\n",ID);
+		fprintf(stderr,"Erreur: la clause d incice%d n'existe pas dans la table (fonction getClause)\n",hashage(ID,f->tailleTabClauses));
 		exit(EXIT_FAILURE);
 	}
 	
@@ -243,16 +244,6 @@ Formule* supprimerClause(Formule* f,Clause *clause)
 	clause->IDClause=0;
 	
 	return f;
-}
-
-
-Formule* supprimerLitteralPur(Formule *f,Litteral* litteral)
-{
-	/* REMARQUE :
-	 * Contient la suppression des clauses conteant ce litteral
-	 */
-	 
-	 return f; 
 }
 
 int empiler(int litteral,int valeurDeVertier)

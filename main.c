@@ -23,7 +23,6 @@ int main(int argc,char **argv)
 		f->tailleTabLitteraux=f->nbLitteraux;
 		affichageClauses(f->tabClauses,f->nbClauses);
 		affichageLitteraux(f->tabLitteraux,f->nbLitteraux);
-		
 		affichageClauses(f->tabClauses,f->nbClauses);
 		affichageLitteraux(f->tabLitteraux,f->nbLitteraux);
 		//f->tailleTabClauses=nbClauses;

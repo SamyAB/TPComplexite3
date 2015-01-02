@@ -127,13 +127,17 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 							//Mettre a jour purete initiale
 							if(valeurLitteral<0)
  							{
-								if((*tabLitteraux)[(-1*valeurLitteral)-1]->purete=='0') (*tabLitteraux)[(-1*valeurLitteral)-1]->purete='n';
-								else if((*tabLitteraux)[(-1*valeurLitteral)-1]->purete=='p') (*tabLitteraux)[(-1*valeurLitteral)-1]->purete='i';
+								if((*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete=='0')
+								 (*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete='n';
+								else if((*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete=='p') 
+								(*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete='i';
 							}
 							else //La variable valeurLitteral > 0 (strictement)
 							{
-								if((*tabLitteraux)[valeurLitteral-1]->purete=='0') (*tabLitteraux)[valeurLitteral-1]->purete='p';
-								else if((*tabLitteraux)[valeurLitteral-1]->purete=='n') (*tabLitteraux)[valeurLitteral-1]->purete='i';
+								if((*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete=='0')
+								 (*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete='p';
+								else if((*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete=='n')
+								 (*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->purete='i';
 							}
 						}
 					}

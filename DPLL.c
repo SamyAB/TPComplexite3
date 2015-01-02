@@ -10,19 +10,21 @@ Formule* simplifier(Formule *f,int litteral)
 	int positionDansClause,suppressionClause;
 	
 	//Récupération du littéral dont l'ID est les valeure absolue de litteral
-	tmpLitteral=getLitteral(f,hashage(litteral,f->tailleTabLitteraux));
+	tmpLitteral=getLitteral(f,litteral);
 	tmpElemClause=tmpLitteral->teteListeClauses;
+
 	if(tmpElemClause==NULL)
 	{
-		fprintf(stderr," Erreur literqlle inexisant (FOnction simplifier)\n");
+		fprintf(stderr," Erreur litteral inexisant (Fonction simplifier)\n");
 		exit(EXIT_FAILURE);
 	}
+	
 	//Parcourt de la liste d'ID de clauses contenant le litteral
 	while(tmpElemClause!=NULL)
 	{
 		//Récupérer la clause d'ID tmpElemClause->ID
-		tmpClause=getClause(f,hashage(tmpElemClause->ID,f->tailleTabClauses));
-		
+		printf(" POp %d	 \n",tmpElemClause->ID);
+		tmpClause=getClause(f,tmpElemClause->ID);
 		//Initialiser le booléen suppression clause a faux
 		suppressionClause=0;
 		
@@ -45,13 +47,17 @@ Formule* simplifier(Formule *f,int litteral)
 			else if(tmpElemLitteral->ID==(-1)*litteral) //Si la clause contient l'inverse de litteral
 			{
 				tmpElemLitteral=tmpElemLitteral->suivant;
+				printf(" 40 \n");
 				f=supprimerLitteralDeClause(f,tmpClause,positionDansClause);
+				printf(" 44 \n");
 				continue; //Élément de la clause supprimé passage au suivant effectué avant sa suppression et la position reste la même
 			}
 			
 			tmpElemLitteral=tmpElemLitteral->suivant;
 			positionDansClause++;
 		}
+			printf(" Hehe sortie de zhile 	 \n");
+
 		if(!suppressionClause) //Si la clause a été supprimée ce passage a déjà été effectué 
 		{
 			tmpElemClause=tmpElemClause->suivant;
@@ -104,8 +110,22 @@ Formule* litteralPur(Formule *f)
 		{
 			if(tmpLitteral->purete!='i') //Le littéral est pur
 			{
-				f=supprimerLitteralPur(f,tmpLitteral);
+				if(tmpLitteral->purete=='p')
+				{
+					f=simplifier(f,tmpLitteral->IDLitteral);
+				}
+				else if(tmpLitteral->purete=='n')
+				{
+					f=simplifier(f,tmpLitteral->IDLitteral*(-1));
+				}
+				else
+				{
+					fprintf(stderr,"Pureter non initialiser (Fonction litteral pure)\n");
+					exit(EXIT_FAILURE);
+				}
+				
 			}
+			tmpLitteral=tmpLitteral->suivant;
 		}
 	}
 	
