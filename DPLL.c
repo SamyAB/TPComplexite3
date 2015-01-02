@@ -1,6 +1,7 @@
 #include "main.h"
 #include "gestionLitterauxEtClauses.h"
 
+
 Formule* simplifier(Formule *f,int litteral)
 {
 	//Déclaration de variables
@@ -132,21 +133,161 @@ Formule* litteralPur(Formule *f)
 	return f;
 }
 
-Formule* genererFormule(Formule *f,int valeurDeVerite)
+Formule* genererFormule(Formule *f,int l,int valeurDeVerite)
 {
 	/* IMPORTANT:
-	 * Mettre la pureté des littéraux a jour !
 	 * ne pas dubliquer les valeur de la table de clause where ID=0
 	 * ne pas dupliquer les littéraux qui ont teteListeClause == NULL
 	 */
-	  
-	return f;
+	Formule *tmpFormule=NULL; 
+	Litteral *tmpLitteral=NULL,*tmpNewLitteral=NULL;
+	Clause *tmpClause=NULL,*tmpNewClause=NULL;
+	elemListe *tmpElemClause,*tmpElemNewClause,*tmpElemLitteral,*tmpElemNewLitteral,*tmpElemNewLitteral2,*tmpElemNewClause2;
+	int i,supTabClause=0,supTabLit=0;
+	
+	
+	for(i=0;i<f->tailleTabClauses;i++)
+	{
+		if(f->tabClauses[i]->IDClause==0)supTabClause++;
+	}
+	for(i=0;i<f->tailleTabLitteraux;i++)
+	{
+		if(f->tabLitteraux[i]->teteListeClauses==NULL)supTabLit++;
+	} 
+	tmpFormule=(Formule*)malloc(sizeof(Formule));
+	if(tmpFormule==NULL)
+	{
+		fprintf(stderr,"fonction genererFormule nouvel formule non cree\n");
+		exit(EXIT_FAILURE);
+	}
+	tmpFormule->tailleTabClauses= f->tailleTabClauses- supTabClause;
+	tmpFormule->tailleTabLitteraux = f->tailleTabLitteraux-supTabLit ;
+	tmpFormule->tabClauses = (Clause**)malloc(tmpFormule->tailleTabClauses*sizeof(Clause*));
+	tmpFormule->tabLitteraux =(Litteral**)malloc(tmpFormule->tailleTabLitteraux*sizeof(Litteral*));
+	
+	for(i=0;i<f->tailleTabClauses;i++)
+	{
+		tmpClause=f->tabClauses[i];
+		while(tmpClause!=NULL)
+		{
+			if(!tmpClause->IDClause) //la clause n'existe plus 
+			{
+				tmpClause=tmpClause->suivant;
+				continue; 
+			}
+			tmpNewClause=(Clause*)malloc(sizeof(Clause));
+			if(tmpNewClause==NULL)
+			{
+				fprintf(stderr,"nouvelle clause non alloué (fonction générationDeFormule)\n");
+				exit(EXIT_FAILURE);
+			}
+			
+			tmpNewClause->IDClause=tmpClause->IDClause;
+			tmpNewClause->nbLitteraux=tmpClause->nbLitteraux;
+			tmpElemLitteral=tmpClause->teteListeLitteraux;
+			
+			tmpElemNewLitteral=(elemListe*)malloc(sizeof(elemListe));
+			if(tmpElemNewLitteral==NULL)
+			{
+				fprintf(stderr,"erreur lors de allocation de la tête de littéraux dans la clause %d (fonctino generationFormule)\n",tmpNewClause->IDClause);
+				exit(EXIT_FAILURE);
+			}
+			tmpElemNewLitteral->ID=tmpElemLitteral->ID;
+			tmpElemNewLitteral->suivant=NULL;
+			tmpElemNewLitteral2=tmpElemNewLitteral;
+			
+			while(tmpElemLitteral!=NULL)
+			{
+				tmpElemNewLitteral=(elemListe*)malloc(sizeof(elemListe));
+				if(tmpElemNewLitteral==NULL)
+				{
+					fprintf(stderr,"erreur lors de l'allocation d'un nouverl ellement dans la liste de littéraux de la clause %d (fonction générationFormule)\n",tmpNewClause->IDClause);
+					exit(EXIT_FAILURE);
+				}
+				tmpElemNewLitteral->ID=tmpElemLitteral->ID;
+				tmpElemNewLitteral2->suivant=tmpElemNewLitteral;
+				tmpElemLitteral=tmpElemLitteral->suivant;
+				tmpElemNewLitteral2=tmpElemNewLitteral2->suivant;
+			}
+			
+			if(tmpFormule->tabClauses[hashage(tmpClause->IDClause,tmpFormule->tailleTabClauses)]==NULL)
+			{
+				tmpFormule->tabClauses[hashage(tmpClause->IDClause,tmpFormule->tailleTabClauses)]=tmpNewClause;
+			}
+			else
+			{
+				tmpNewClause->suivant=tmpFormule->tabClauses[hashage(tmpClause->IDClause,tmpFormule->tailleTabClauses)];
+				tmpFormule->tabClauses[hashage(tmpClause->IDClause,tmpFormule->tailleTabClauses)]=tmpNewClause;
+			}
+		}
+	}
+	
+	for(i=0;i<f->tailleTabLitteraux;i++)
+	{
+		tmpLitteral=f->tabLitteraux[i];
+		while(tmpLitteral!=NULL)
+		{
+			if(tmpLitteral->teteListeClauses==NULL) //Le littéral n'éxiste plus
+			{
+				tmpLitteral=tmpLitteral->suivant;
+				continue;
+			}
+			tmpNewLitteral=(Litteral*)malloc(sizeof(Litteral));
+			if(tmpNewLitteral==NULL)
+			{
+				fprintf(stderr,"Nouvelle littéral non alloué (fonction générationDeFormule)\n");
+				exit(EXIT_FAILURE);
+			}
+			
+			tmpNewLitteral->IDLitteral=tmpLitteral->IDLitteral;
+			tmpElemClause=tmpLitteral->teteListeClauses;
+			
+			tmpElemNewClause=(elemListe*)malloc(sizeof(elemListe));
+			if(tmpElemNewClause==NULL)
+			{
+				fprintf(stderr,"erreur lors de allocation de la tête de clauses dans le littéral %d (fonctino generationFormule)\n",tmpNewLitteral->IDLitteral);
+				exit(EXIT_FAILURE);
+			}
+			tmpElemNewClause->ID=tmpElemClause->ID;
+			tmpElemNewClause->suivant=NULL;
+			tmpElemNewClause2=tmpElemNewClause;
+			
+			while(tmpElemClause!=NULL)
+			{
+				tmpElemNewClause=(elemListe*)malloc(sizeof(elemListe));
+				if(tmpElemNewClause==NULL)
+				{
+					fprintf(stderr,"erreur lors de l'allocation d'un nouverl ellement dans la liste de clauses de lu littéral %d (fonction générationFormule)\n",tmpNewLitteral->IDLitteral);
+					exit(EXIT_FAILURE);
+				}
+				tmpElemNewClause->ID=tmpElemClause->ID;
+				tmpElemNewClause2->suivant=tmpElemNewClause;
+				tmpElemClause=tmpElemClause->suivant;
+				tmpElemNewClause2=tmpElemNewClause2->suivant;
+			}
+			
+			if(tmpFormule->tabLitteraux[hashage(tmpLitteral->IDLitteral,tmpFormule->tailleTabLitteraux)]==NULL)
+			{
+				tmpFormule->tabLitteraux[hashage(tmpLitteral->IDLitteral,tmpFormule->tailleTabLitteraux)]=tmpNewLitteral;
+			}
+			else
+			{
+				tmpNewLitteral->suivant=tmpFormule->tabLitteraux[hashage(tmpLitteral->IDLitteral,tmpFormule->tailleTabLitteraux)];
+				tmpFormule->tabLitteraux[hashage(tmpLitteral->IDLitteral,tmpFormule->tailleTabLitteraux)]=tmpNewLitteral;
+			}
+		}
+	}
+	
+	tmpFormule=simplifier(tmpFormule,(valeurDeVerite*l)); 
+	tmpFormule=majPurete(tmpFormule);
+	return tmpFormule;
 }
 
 int DPLL(Formule **f)
 {	
 	//Déclaration de variables
 	Formule *f1=NULL,*f2=NULL;
+	int l;
 	
 	if (!(*f)->nbClauses) //Si il y a 0 Clause, la formule est SAT
 	{
@@ -163,13 +304,14 @@ int DPLL(Formule **f)
 		return 0;
 	}
 	
-	//Ne pas oublier de mettre a jour littéraux pures dans générer formule !!!
 	*f=litteralPur(*f);
 	
+	//On choisi le littéral selon lequel nous allons générer nos formules
+	l=choixLitteral(*f);
 	//On génére une copie de la formule f avec affectation d'un littéral a vrai dans f1 
-	f1=genererFormule(*f,1);
+	f1=genererFormule(*f,l,1);
 	//Puis on génére une copie de f avec affectation du même litéral précedent a faux dans f2
-	f2=genererFormule(*f,0);
+	f2=genererFormule(*f,l,-1);
 	
 	//Libération des recources mémoire consommée par la variable contenant formule f 
 	free(*f);

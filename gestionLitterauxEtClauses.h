@@ -2,6 +2,8 @@
 #define GESTIONLITTERAUXETCLAUSES
 
 int ajouterLitteral(Clause *clause,int valeurLitteral);
+Formule* majPurete(Formule *f);
+int choixLitteral(Formule *f);
 void affichageClauses(Clause **tabClauses,int tailleTabClauses);
 void affichageLitteraux(Litteral **tabLitteraux,int tailleTabLitteraux);
 int existeClauseVide(Formule *f);

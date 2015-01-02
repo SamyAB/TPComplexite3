@@ -6,6 +6,72 @@ int hashage(int ID,int taille)
 	return (abs(ID)%(taille));
 }
 
+Formule* majPurete(Formule *f)
+{
+	int i=0;
+	elemListe* tmpElemClause=NULL;
+	Litteral *tmpLitteral=NULL;
+	for(i=0;f->tailleTabLitteraux;i++)
+	{
+		tmpLitteral=f->tabLitteraux[i];
+		while(tmpLitteral!=NULL) //Gestion de collision
+		{
+			tmpLitteral->purete='0';
+			tmpElemClause=tmpLitteral->teteListeClauses;
+			while(tmpElemClause!=NULL)
+			{
+				if(tmpElemClause->ID<0)
+ 				{
+					if(tmpLitteral->purete=='0') tmpLitteral->purete='n';
+					else if(tmpLitteral->purete='p') tmpLitteral->purete='i';
+				}
+				else if(tmpElemClause->ID>0)
+				{
+					if(tmpLitteral->purete=='0') tmpLitteral->purete='p';
+					else if(tmpLitteral->purete=='n') tmpLitteral->purete='i';
+				}
+				else
+				{
+					fprintf(stderr,"Erreur: il existe une clause 0 dans la liste de clause du litteral %d (fonction majPurete)\n",tmpLitteral->IDLitteral);		
+					exit(EXIT_FAILURE);
+				}
+				tmpElemClause=tmpElemClause->suivant;
+			}
+			
+		}
+	}
+	return f ;
+}
+
+int choixLitteral(Formule *f)
+{
+	//Déclaration de variables
+	Litteral *tmpLitteral=f->tabLitteraux[0];
+	int i=0;
+	
+	//Parcourt des littéraux jusqu'a trouvé un littéral dont la liste de clause est non vide
+	while(tmpLitteral!=NULL && tmpLitteral->teteListeClauses==NULL)
+	{
+		if(tmpLitteral->suivant==NULL)
+		{
+			i++;
+			tmpLitteral=f->tabLitteraux[i];
+		}
+		else
+		{
+			tmpLitteral=tmpLitteral->suivant;
+		}
+	}
+	
+	if(tmpLitteral==NULL)
+	{
+		fprintf(stderr,"Il n'y a plus de littéral ! (fonction choixLitteral)\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	return tmpLitteral->IDLitteral;
+}
+
 int ajouterLitteral(Clause *clause,int valeurLitteral)
 {
 	elemListe *tmp=NULL;
