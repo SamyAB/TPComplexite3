@@ -10,14 +10,18 @@ Formule* simplifier(Formule *f,int litteral)
 	int positionDansClause,suppressionClause;
 	
 	//Récupération du littéral dont l'ID est les valeure absolue de litteral
-	tmpLitteral=getLitteral(f,abs(litteral));
+	tmpLitteral=getLitteral(f,hashage(litteral,f->tailleTabLitteraux));
 	tmpElemClause=tmpLitteral->teteListeClauses;
-	
+	if(tmpElemClause==NULL)
+	{
+		fprintf(stderr," Erreur literqlle inexisant (FOnction simplifier)\n");
+		exit(EXIT_FAILURE);
+	}
 	//Parcourt de la liste d'ID de clauses contenant le litteral
 	while(tmpElemClause!=NULL)
 	{
 		//Récupérer la clause d'ID tmpElemClause->ID
-		tmpClause=getClause(f,tmpElemClause->ID);
+		tmpClause=getClause(f,hashage(tmpElemClause->ID,f->tailleTabClauses));
 		
 		//Initialiser le booléen suppression clause a faux
 		suppressionClause=0;
@@ -112,6 +116,8 @@ Formule* genererFormule(Formule *f,int valeurDeVerite)
 {
 	/* IMPORTANT:
 	 * Mettre la pureté des littéraux a jour !
+	 * ne pas dubliquer les valeur de la table de clause where ID=0
+	 * ne pas dupliquer les littéraux qui ont teteListeClause == NULL
 	 */
 	  
 	return f;

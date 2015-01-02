@@ -5,7 +5,7 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 {
 	//Déclaration de variables
 	FILE *fichier=NULL;
-	int i,j,k,valeurLitteral;
+	int i,j,k,valeurLitteral,intHash=0;
 	char ligne[256],nombre[10],nombre2[10];
 	elemListe *tmpElemClause=NULL;
 	
@@ -66,24 +66,27 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 	*tabLitteraux=(Litteral**)malloc((*nbLitteraux)*sizeof(Litteral*));
 	
 	//Initialisation des IDLitteral et des valeurs de vérité et des purete de tout les littéraux aux valeurs par défaut
+	intHash=hashage(i+1,*nbLitteraux);
 	for(i=0;i<*nbLitteraux;i++)
 	{
-		(*tabLitteraux)[i]=(Litteral*)malloc(sizeof(Litteral));
-		(*tabLitteraux)[i]->IDLitteral=i+1;
-		(*tabLitteraux)[i]->suivant=NULL;
-		(*tabLitteraux)[i]->teteListeClauses=NULL;
-		(*tabLitteraux)[i]->purete='0';//'0' pureté inconnue
+		intHash=hashage(i+1,*nbLitteraux);
+		(*tabLitteraux)[intHash]=(Litteral*)malloc(sizeof(Litteral));
+		(*tabLitteraux)[intHash]->IDLitteral=i+1;
+		(*tabLitteraux)[intHash]->suivant=NULL;
+		(*tabLitteraux)[intHash]->teteListeClauses=NULL;
+		(*tabLitteraux)[intHash]->purete='0';//'0' pureté inconnue
 	}
 	
 	//Lecture des clauses et variables 
 	for(i=0;i<*nbClauses;i++)
 	{
-		(*tabClauses)[i]=(Clause*)malloc(sizeof(Clause));
+		intHash=hashage(i+1,*nbClauses);
+		(*tabClauses)[intHash]=(Clause*)malloc(sizeof(Clause));
 		fgets(ligne,255,fichier);
-		(*tabClauses)[i]->nbLitteraux=0;
-		(*tabClauses)[i]->IDClause=i+1;
-		(*tabClauses)[i]->suivant=NULL;
-		(*tabClauses)[i]->teteListeLitteraux=NULL;
+		(*tabClauses)[intHash]->nbLitteraux=0;
+		(*tabClauses)[intHash]->IDClause=i+1;
+		(*tabClauses)[intHash]->suivant=NULL;
+		(*tabClauses)[intHash]->teteListeLitteraux=NULL;
 		j=0;k=0;
 		while(ligne[j]!='\n')
 		{
@@ -96,9 +99,9 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 					valeurLitteral=(int)strtol(nombre,NULL,10);
 					if(valeurLitteral)//la variable valeurLitteral est différente de 0
 					{
-						if(ajouterLitteral(((*tabClauses)[i]),valeurLitteral)!=0)//si l'ajoute du littéral a la clause s'est MAL passé
+						if(ajouterLitteral(((*tabClauses)[intHash]),valeurLitteral)!=0)//si l'ajoute du littéral a la clause s'est MAL passé
 						{
-							fprintf(stderr,"Erreur: le litteral %d n'as pas pu être ajouté à la clause %d\n",valeurLitteral,i);
+							fprintf(stderr,"Erreur: le litteral %d n'as pas pu être ajouté à la clause %d\n",valeurLitteral,intHash);
 							continue;
 						}
 						else
@@ -108,13 +111,17 @@ int lecture(char* cheminFichier,Clause ***tabClauses,Litteral ***tabLitteraux,in
 							if(valeurLitteral>0)//Si le littéral est positif
 							{
 								tmpElemClause->ID=(i+1);
+								tmpElemClause->suivant =NULL ;
 							}
 							else//Si le littéral est négatif
 							{
 								tmpElemClause->ID=(i+1)*(-1);
+								tmpElemClause->suivant =NULL ;
 							}
-							tmpElemClause->suivant=(*tabLitteraux)[abs(valeurLitteral)-1]->teteListeClauses;
-							(*tabLitteraux)[abs(valeurLitteral)-1]->teteListeClauses=tmpElemClause;
+							//tmpElemClause->suivant=(*tabLitteraux)[abs(valeurLitteral)-1]->teteListeClauses;
+							tmpElemClause->suivant=(*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->teteListeClauses;
+							(*tabLitteraux)[hashage(valeurLitteral,*nbLitteraux)]->teteListeClauses=tmpElemClause;
+							//(*tabLitteraux)[abs(valeurLitteral)-1]->teteListeClauses=tmpElemClause;
 							
 							
 							//Mettre a jour purete initiale

@@ -1,5 +1,11 @@
 #include "main.h"
 
+int hashage(int ID,int taille)
+{
+	//Fonction de hachage: modulo taille de la table.
+	return (abs(ID)%(taille));
+}
+
 int ajouterLitteral(Clause *clause,int valeurLitteral)
 {
 	elemListe *tmp=NULL;
@@ -44,10 +50,10 @@ void affichageClauses(Clause **tabClauses,int tailleTabClauses)
 	int i;
 	elemListe *tmp;
 	Clause *tmpClause;
-	printf("nombre de clauses : %d\n",tailleTabClauses);
+	printf("Taille table clause : %d\n",tailleTabClauses);
 	for(i=0;i<tailleTabClauses;i++)
 	{
-		tmpClause=tabClauses[i];
+		tmpClause=tabClauses[hashage(i+1,tailleTabClauses)];
 		while(tmpClause!=NULL)
 		{
 			tmp=tmpClause->teteListeLitteraux;
@@ -71,7 +77,7 @@ void affichageLitteraux(Litteral **tabLitteraux,int tailleTabLitteraux)
 	printf("nombre de litteraux : %d\n",tailleTabLitteraux);
 	for(i=0;i<tailleTabLitteraux;i++)
 	{
-		tmpLitteral=tabLitteraux[i];
+		tmpLitteral=tabLitteraux[hashage(i+1,tailleTabLitteraux)];
 		while(tmpLitteral!=NULL)
 		{
 			tmp=tmpLitteral->teteListeClauses;
@@ -119,6 +125,21 @@ Litteral* getLitteral(Formule *f,int ID)
 {
 	//Déclaration de variables
 	Litteral *tmpLitteral=NULL;
+	printf("%d sur\n",hashage(ID,f->tailleTabLitteraux));
+	tmpLitteral=f->tabLitteraux[hashage(ID,f->tailleTabLitteraux)];
+	
+	//Gestion de collision
+	while(tmpLitteral!=NULL && tmpLitteral->IDLitteral!=ID)
+	{
+		tmpLitteral=tmpLitteral->suivant;
+	}
+	
+	//Si le litteral à l'ID "ID" n'éxiste pas dans la table des littéraux
+	if(tmpLitteral==NULL)
+	{
+		fprintf(stderr,"Erreur: le litteral %d n'existe pas dans la table (fonction getLitteral)\n",ID);
+		exit(EXIT_FAILURE);
+	}
 	
 	return tmpLitteral;
 }
@@ -126,7 +147,20 @@ Litteral* getLitteral(Formule *f,int ID)
 Clause* getClause(Formule *f,int ID)
 {
 	//Déclaration de variables
-	Clause *tmpClause=NULL;
+	Clause *tmpClause=f->tabClauses[hashage(ID,f->tailleTabClauses)];
+	
+	//Gestion de collision
+	while(tmpClause!=NULL && tmpClause->IDClause!=ID)
+	{
+		tmpClause=tmpClause->suivant;
+	}
+	
+	//Si la clause à l'ID "ID" n'éxiste pas dans la table des clauses
+	if(tmpClause==NULL)
+	{
+		fprintf(stderr,"Erreur: la clause %d n'existe pas dans la table (fonction getClause)\n",ID);
+		exit(EXIT_FAILURE);
+	}
 	
 	return tmpClause;
 }
@@ -153,18 +187,17 @@ Formule* supprimerLitteralDeClause(Formule* f,Clause *clause,int positionDansCla
 		tmpElemLitteral=tmpElemLitteral->suivant;
 		 
 		//Avancer jusqu'a le littéral a supprimer
-		for(i=1;i<=positionDansClause;i++)
+		for(i=1;i<positionDansClause;i++)
 		{
 			tmpElemLitteral=tmpElemLitteral->suivant;
 			tmpElemLitteral2=tmpElemLitteral2->suivant;
 		}
 		tmpElemLitteral2->suivant=tmpElemLitteral->suivant;
-	}
-	 
+	} 
 	//Suppression de la clause dans la liste de clause du litteral
 	tmpLitteral=getLitteral(f,abs(tmpElemLitteral->ID));
 	tmpElemClause=tmpLitteral->teteListeClauses;
-	
+
 	//Si le littéral est négatif la clause dans la liste de clause du littéral est négatif
 	if(tmpElemLitteral->ID<0) x=-1;
 	else x=1;
@@ -177,7 +210,7 @@ Formule* supprimerLitteralDeClause(Formule* f,Clause *clause,int positionDansCla
 	{
 		tmpElemClause2=tmpElemClause;
 		tmpElemClause=tmpElemClause->suivant;
-		while(tmpElemClause!=NULL||tmpElemClause->ID*x==clause->IDClause)
+		while((tmpElemClause !=NULL ) && (tmpElemClause->ID*x != clause->IDClause))
 		{
 			tmpElemClause=tmpElemClause->suivant;
 			tmpElemClause2=tmpElemClause2->suivant;
@@ -203,11 +236,10 @@ Formule* supprimerClause(Formule* f,Clause *clause)
 	{
 		//Suppression du littéral de la clause "clause" et de "clause" de liste de clause du litéral
 		f=supprimerLitteralDeClause(f,clause,position);
-		position++;
 		tmpElemLitteral=tmpElemLitteral->suivant;
 	}
 	
-	//la clause n'existe plus ! mettre l'ID a -1
+	//la clause n'existe plus ! mettre l'ID a 0
 	clause->IDClause=0;
 	
 	return f;

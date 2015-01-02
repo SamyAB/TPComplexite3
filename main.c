@@ -17,8 +17,13 @@ int main(int argc,char **argv)
 	Formule *f=NULL;
 	
 	f=(Formule*) malloc(sizeof(Formule));
-	if(!lecture("3amar.cnf",&(f->tabClauses),&(f->tabLitteraux),&(f->nbClauses),&(f->nbLitteraux)))
+	if(!lecture("testsupression.cnf",&(f->tabClauses),&(f->tabLitteraux),&(f->nbClauses),&(f->nbLitteraux)))
 	{
+		f->tailleTabClauses=f->nbClauses;
+		f->tailleTabLitteraux=f->nbLitteraux;
+		affichageClauses(f->tabClauses,f->nbClauses);
+		affichageLitteraux(f->tabLitteraux,f->nbLitteraux);
+		
 		affichageClauses(f->tabClauses,f->nbClauses);
 		affichageLitteraux(f->tabLitteraux,f->nbLitteraux);
 		//f->tailleTabClauses=nbClauses;
